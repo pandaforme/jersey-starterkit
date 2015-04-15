@@ -1,9 +1,11 @@
 package rest;
 
-import javax.ws.rs.GET;
-import javax.ws.rs.Path;
-import javax.ws.rs.Produces;
+import model.User;
+
+import javax.validation.Valid;
+import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
 
 @Path("hello")
 public class HelloWorld {
@@ -13,4 +15,13 @@ public class HelloWorld {
   public String hello() {
     return "hello";
   }
+
+  @Consumes(MediaType.APPLICATION_JSON)
+  @POST
+  public Response hello(@Valid User user) {
+    return Response.ok(user, MediaType.APPLICATION_JSON)
+                   .build();
+  }
 }
+
+
