@@ -4,8 +4,10 @@ import org.glassfish.jersey.filter.LoggingFilter;
 import org.glassfish.jersey.server.ResourceConfig;
 import org.slf4j.bridge.SLF4JBridgeHandler;
 
+import javax.ws.rs.ApplicationPath;
 import java.util.logging.Logger;
 
+@ApplicationPath ("/*")
 public class MyApplication extends ResourceConfig {
   private final Logger logger = Logger.getLogger(MyApplication.class.getName());
 
@@ -16,6 +18,8 @@ public class MyApplication extends ResourceConfig {
     // the initialization phase of your application
     SLF4JBridgeHandler.install();
 
-    register(new LoggingFilter(logger, true));
+    packages ("provider", "rest");
+
+    register (new LoggingFilter (logger, true));
   }
 }
