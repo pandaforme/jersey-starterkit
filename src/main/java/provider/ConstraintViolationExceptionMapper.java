@@ -15,7 +15,7 @@ public class ConstraintViolationExceptionMapper implements ExceptionMapper<Const
   @Override
   public Response toResponse(ConstraintViolationException exception) {
     return Response.status(Response.Status.BAD_REQUEST)
-                   .entity(ValidationHelper.constraintViolationToValidationErrors(exception))
+                   .entity(String.format("{\"message\":\"%s\"}", ValidationHelper.constraintViolationToValidationErrors(exception)))
                    .type(MediaType.APPLICATION_JSON)
                    .build();
   }
