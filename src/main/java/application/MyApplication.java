@@ -1,6 +1,7 @@
 package application;
 
 import annotation.UserParam;
+import db.CrazyThread;
 import db.Repo;
 import factory.RepoFactory;
 import factory.UserParamValueFactoryProvider;
@@ -9,10 +10,13 @@ import io.swagger.jaxrs.listing.SwaggerSerializers;
 import io.swagger.jersey.listing.ApiListingResourceJSON;
 import lombok.extern.java.Log;
 import org.glassfish.hk2.api.InjectionResolver;
+import org.glassfish.hk2.api.ServiceLocator;
 import org.glassfish.hk2.api.TypeLiteral;
+import org.glassfish.hk2.utilities.ServiceLocatorUtilities;
 import org.glassfish.hk2.utilities.binding.AbstractBinder;
 import org.glassfish.jersey.filter.LoggingFilter;
 import org.glassfish.jersey.server.ResourceConfig;
+import org.glassfish.jersey.server.ServerProperties;
 import org.glassfish.jersey.server.spi.internal.ValueFactoryProvider;
 import org.slf4j.bridge.SLF4JBridgeHandler;
 import utils.ApiAuthorizationFilterImpl;
@@ -24,14 +28,20 @@ import javax.ws.rs.ApplicationPath;
 @Log
 public class MyApplication extends ResourceConfig {
   public MyApplication() {
-    super();
+    ServiceLocator    serviceLocator = ServiceLocatorUtilities.createAndPopulateServiceLocator();
+    final CrazyThread crazyThread    = serviceLocator.getService(CrazyThread.class);
+    crazyThread.run();
+
+    // Enable Tracing support.
+    property(ServerProperties.TRACING, "ALL");
+
     // Optionally remove existing handlers attached to j.u.l root logger
     SLF4JBridgeHandler.removeHandlersForRootLogger();
     // add SLF4JBridgeHandler to j.u.l's root logger, should be done once during
     // the initialization phase of your application
     SLF4JBridgeHandler.install();
 
-    packages("provider", "rest");
+    packages("provider", "rest", "db", "db.impl");
 
     register(new LoggingFilter(log, true));
 
